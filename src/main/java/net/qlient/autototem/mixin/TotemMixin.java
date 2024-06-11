@@ -53,7 +53,11 @@ public class TotemMixin {
     }
 
     private int getTotemSlot(PlayerInventory inventory) {
-        for (int i = 0; i < inventory.main.size(); i++) {
+        for (int i = 9; i < inventory.main.size(); i++) { // Check inventory first
+            ItemStack stack = inventory.main.get(i);
+            if (!stack.isEmpty() && stack.getItem() == Items.TOTEM_OF_UNDYING) return i;
+        }
+        for(int i = 0; i < 9; i++) { // Check hotbar
             ItemStack stack = inventory.main.get(i);
             if (!stack.isEmpty() && stack.getItem() == Items.TOTEM_OF_UNDYING) return i;
         }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "autototem",
-  "version": "1.19.4",
+  "version": "1.1",
 
   "name": "Auto Totem",
   "description": "Replaces your totem when using one. (Offhand Only)",
