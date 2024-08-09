@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "autototem",
-  "version": "1.1",
+  "version": "2.0",
 
   "name": "Auto Totem",
   "description": "Replaces your totem when using one. (Offhand Only)",
@@ -21,6 +21,10 @@
   "entrypoints": {
     "client": [
       "net.qlient.autototem.client.autototem"
+    ],
+    "modmenu":
+    [
+      "net.qlient.autototem.config.AutototemModMenuIntegration"
     ]
   },
   "mixins": [
@@ -38,6 +42,7 @@
   "depends": {
     "fabricloader": "*",
     "minecraft": "*",
-    "fabric": "*"
+    "fabric": "*",
+    "cloth-config": "*"
   }
 }
