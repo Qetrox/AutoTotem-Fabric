@@ -5,7 +5,6 @@ import me.shedaniel.autoconfig.annotation.Config;
 @Config(name = "autototem")
 public class AutototemConfigData {
 
-    public boolean LegitSwap = true;
     public boolean Enabled = true;
     public boolean CheckForEffects = true;
 

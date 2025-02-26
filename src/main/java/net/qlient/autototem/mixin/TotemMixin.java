@@ -2,6 +2,7 @@ package net.qlient.autototem.mixin;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.GameRenderer;
@@ -12,9 +13,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
-import net.minecraft.network.packet.c2s.play.PickFromInventoryC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -98,53 +99,42 @@ public class TotemMixin {
     @Unique
     private void restockSlot(PlayerEntity p, int s) {
         PlayerInventory playerInventory = p.getInventory();
+        ScreenHandler screenHandler = p.currentScreenHandler;
+
         delayTicks = getDelay() / 50;
-        if (AutototemConfigManager.getConfig().LegitSwap) {
-            packetsToSend = new ArrayList<>();
-            if (s < 9) {
-                packetsToSend.add(new UpdateSelectedSlotC2SPacket(s));
-                packetsToSend.add(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN));
-                packetsToSend.add(new UpdateSelectedSlotC2SPacket(playerInventory.selectedSlot));
-            } else {
-                packetsToSend.add(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN));
-                packetsToSend.add(new PickFromInventoryC2SPacket(s));
-                packetsToSend.add(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN));
-            }
+        packetsToSend = new ArrayList<>();
+        Int2ObjectMap<ItemStack> emptyMap = new Int2ObjectArrayMap<>();
+
+        if (s < 9) {
+            packetsToSend.add(new UpdateSelectedSlotC2SPacket(s));
+
+            packetsToSend.add(new PlayerActionC2SPacket(
+                    PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND,
+                    BlockPos.ORIGIN,
+                    Direction.DOWN
+            ));
+
+            packetsToSend.add(new UpdateSelectedSlotC2SPacket(playerInventory.selectedSlot));
         } else {
-            packetsToSend = new ArrayList<>();
-            Int2ObjectMap<ItemStack> emptyMap = new Int2ObjectArrayMap<>();
+            packetsToSend.add(new ClickSlotC2SPacket(
+                    screenHandler.syncId,
+                    screenHandler.getRevision(),
+                    s,
+                    0,
+                    SlotActionType.PICKUP,
+                    playerInventory.getStack(s).copy(),
+                    emptyMap
+            ));
 
-            if (s < 9) {
-                packetsToSend.add(new UpdateSelectedSlotC2SPacket(s));
-
-                packetsToSend.add(new PlayerActionC2SPacket(
-                        PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND,
-                        BlockPos.ORIGIN,
-                        Direction.DOWN
-                ));
-
-                packetsToSend.add(new UpdateSelectedSlotC2SPacket(playerInventory.selectedSlot));
-            } else {
-                packetsToSend.add(new ClickSlotC2SPacket(
-                        p.currentScreenHandler.syncId,
-                        p.currentScreenHandler.getRevision(),
-                        s,
-                        0,
-                        SlotActionType.PICKUP,
-                        playerInventory.getStack(s).copy(),
-                        emptyMap
-                ));
-
-                packetsToSend.add(new ClickSlotC2SPacket(
-                        p.currentScreenHandler.syncId,
-                        p.currentScreenHandler.getRevision(),
-                        45,
-                        0,
-                        SlotActionType.PICKUP,
-                        playerInventory.getStack(s).copy(),
-                        emptyMap
-                ));
-            }
+            packetsToSend.add(new ClickSlotC2SPacket(
+                    screenHandler.syncId,
+                    screenHandler.getRevision(),
+                    45,
+                    0,
+                    SlotActionType.PICKUP,
+                    playerInventory.getStack(s).copy(),
+                    emptyMap
+            ));
         }
     }
 }

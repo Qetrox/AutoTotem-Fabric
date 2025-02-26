@@ -23,11 +23,6 @@ public class AutototemConfigBuilder {
                 .setSaveConsumer(newValue -> AutototemConfigManager.getConfig().Enabled = newValue)
                 .build());
 
-        general.addEntry(entryBuilder.startBooleanToggle(Text.of("Legit Swap"), AutototemConfigManager.getConfig().LegitSwap)
-                .setTooltip(Text.of("Swap totems in a legit way, swapping to your hand first then swapping it to your off-hand. This is slower than directly swapping from your inventory to your off-hand."))
-                .setDefaultValue(true)
-                .setSaveConsumer(newValue -> AutototemConfigManager.getConfig().LegitSwap = newValue)
-                .build());
         general.addEntry(entryBuilder.startBooleanToggle(Text.of("Check For Effects"), AutototemConfigManager.getConfig().CheckForEffects)
                 .setTooltip(Text.of("Requires having fire resistance and regeneration before supplying a new totem."))
                 .setDefaultValue(true)
