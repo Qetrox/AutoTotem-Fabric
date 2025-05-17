@@ -13,6 +13,7 @@ package net.qlient.autototem.mixin;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.GameRenderer;
@@ -27,6 +28,7 @@ import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.sync.ItemStackHash;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.qlient.autototem.config.AutototemConfigManager;
@@ -90,12 +92,14 @@ public class TotemMixin {
     // --- QLIENT ORIGINAL CODE START ---
     @Unique
     private int getTotemSlot(PlayerInventory inventory) {
-        for (int i = 9; i < inventory.main.size(); i++) { // Check inventory first
-            ItemStack stack = inventory.main.get(i);
+        for (int i = 9; i < inventory.size(); i++) { // Check inventory first
+            if (i == 45) continue;
+            if (i == 40) continue;
+            ItemStack stack = inventory.getStack(i);
             if (!stack.isEmpty() && stack.getItem() == Items.TOTEM_OF_UNDYING) return i;
         }
         for (int i = 0; i < 9; i++) { // Then check hotbar
-            ItemStack stack = inventory.main.get(i);
+            ItemStack stack = inventory.getStack(i);
             if (!stack.isEmpty() && stack.getItem() == Items.TOTEM_OF_UNDYING) return i;
         }
         return -1;
@@ -117,7 +121,8 @@ public class TotemMixin {
 
         delayTicks = getDelay() / 50;
         packetsToSend = new ArrayList<>();
-        Int2ObjectMap<ItemStack> emptyMap = new Int2ObjectArrayMap<>();
+        Int2ObjectMap<ItemStackHash> emptyMap = new Int2ObjectArrayMap<>();
+        ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
 
         if (slot < 9) {
             packetsToSend.add(new UpdateSelectedSlotC2SPacket(slot));
@@ -126,25 +131,25 @@ public class TotemMixin {
                     BlockPos.ORIGIN,
                     Direction.DOWN
             ));
-            packetsToSend.add(new UpdateSelectedSlotC2SPacket(playerInventory.selectedSlot));
+            packetsToSend.add(new UpdateSelectedSlotC2SPacket(playerInventory.getSelectedSlot()));
         } else {
             packetsToSend.add(new ClickSlotC2SPacket(
                     screenHandler.syncId,
                     screenHandler.getRevision(),
-                    slot,
-                    0,
+                    (short) slot,
+                    (byte) 0,
                     SlotActionType.PICKUP,
-                    playerInventory.getStack(slot).copy(),
-                    emptyMap
+                    new Int2ObjectOpenHashMap<>(),
+                    ItemStackHash.fromItemStack(playerInventory.getStack(slot).copy(), networkHandler.method_68823())
             ));
             packetsToSend.add(new ClickSlotC2SPacket(
                     screenHandler.syncId,
                     screenHandler.getRevision(),
-                    45,
-                    0,
+                    (short) 45,
+                    (byte) 0,
                     SlotActionType.PICKUP,
-                    playerInventory.getStack(slot).copy(),
-                    emptyMap
+                    new Int2ObjectOpenHashMap<>(),
+                    ItemStackHash.fromItemStack(playerInventory.getStack(slot).copy(), networkHandler.method_68823())
             ));
         }
     }

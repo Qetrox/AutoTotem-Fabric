@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "autototem",
-  "version": "2.0.1",
+  "version": "2.0.2",
 
   "name": "Auto Totem",
   "description": "Replaces your totem when using one. (Offhand Only)",
@@ -10,8 +10,8 @@
   ],
   "contact": {
     "sources": "https://github.com/Qetrox/AutoTotem",
-    "homepage": "https://qlient.net/",
-    "email": "mailto://info@qlient.net",
+    "homepage": "https://winstreak.ws/",
+    "email": "mailto://qetrox@winstreak.ws",
     "issues": "https://github.com/Qetrox/AutoTotem"
   },
 
