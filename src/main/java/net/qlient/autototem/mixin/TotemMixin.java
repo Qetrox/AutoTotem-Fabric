@@ -142,7 +142,7 @@ public class TotemMixin {
                     (byte) 0,
                     SlotActionType.PICKUP,
                     new Int2ObjectOpenHashMap<>(),
-                    ItemStackHash.fromItemStack(playerInventory.getStack(slot).copy(), networkHandler.method_68823())
+                    ItemStackHash.fromItemStack(playerInventory.getStack(slot).copy(), networkHandler.getComponentHasher())
             ));
             packetsToSend.add(new ClickSlotC2SPacket(
                     screenHandler.syncId,
@@ -151,7 +151,7 @@ public class TotemMixin {
                     (byte) 0,
                     SlotActionType.PICKUP,
                     new Int2ObjectOpenHashMap<>(),
-                    ItemStackHash.fromItemStack(playerInventory.getStack(slot).copy(), networkHandler.method_68823())
+                    ItemStackHash.fromItemStack(playerInventory.getStack(slot).copy(), networkHandler.getComponentHasher())
             ));
         }
     }
