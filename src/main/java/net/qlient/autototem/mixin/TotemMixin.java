@@ -78,6 +78,8 @@ public class TotemMixin {
         GameRenderer gameRenderer = (GameRenderer) ((Object) this);
         if (gameRenderer.getClient().player == null) return;
 
+        if (!AutototemConfigManager.getConfig().Enabled) return;
+
         if (AutototemConfigManager.getConfig().CheckForEffects) {
             if (!gameRenderer.getClient().player.hasStatusEffect(StatusEffects.FIRE_RESISTANCE)) return;
             if (!gameRenderer.getClient().player.hasStatusEffect(StatusEffects.REGENERATION)) return;
