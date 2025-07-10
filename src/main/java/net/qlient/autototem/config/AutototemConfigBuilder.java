@@ -39,7 +39,7 @@ public class AutototemConfigBuilder {
                 .setDefaultValue(true)
                 .setSaveConsumer(newValue -> AutototemConfigManager.getConfig().AddRandomDelay = newValue)
                 .build());
-        delay.addEntry(entryBuilder.startIntSlider(Text.of("Delay In Milliseconds"), AutototemConfigManager.getConfig().MaxRandomDelay, 0, 1000)
+        delay.addEntry(entryBuilder.startIntSlider(Text.of("Maximum Random Delay In Milliseconds"), AutototemConfigManager.getConfig().MaxRandomDelay, 0, 1000)
                 .setTooltip(Text.of("The maximum random delay that can be added."))
                 .setDefaultValue(500)
                 .setSaveConsumer(newValue -> AutototemConfigManager.getConfig().MaxRandomDelay = newValue)
